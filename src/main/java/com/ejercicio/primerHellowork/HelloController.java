@@ -1,34 +1,60 @@
 package com.ejercicio.primerHellowork;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/")
 public class HelloController {
-    private List<String> paises =new ArrayList<String>();
 
-    public HelloController(){
-        paises.add("Colombia");
-        paises.add("Peru");
-        paises.add("Brasil");
-        paises.add("Urugay");
-        paises.add("Venezuela");
-        paises.add("Paraguay");
-        paises.add("Bolivia");
+
+    private final HelloService helloService;
+
+    public HelloController(HelloService helloService) {
+        this.helloService = helloService;
+    }
+    /*@GetMapping("/")
+    public ModelAndView buscar() {
+        ModelAndView mv = new ModelAndView("buscar");
+        return mv;
+    }*/
+
+    @GetMapping("/buscar")
+    public ModelAndView buscar(@RequestParam(name = "nombre", required = false) String nombre) {
+        List<String> paises = helloService.getPaises();
+        ModelAndView mv = new ModelAndView("buscar");
+
+        if (paises == null || paises.isEmpty()) {
+            mv.addObject("resultados", "No se encontraron países.");
+            return mv;
+        }
+
+        if (nombre != null && !nombre.isEmpty()) {
+            // Filtrar los países por el nombre ingresado
+            List<String> resultados = paises.stream()
+                    .filter(pais -> pais.toLowerCase().contains(nombre.toLowerCase()))
+                    .collect(Collectors.toList());
+
+            mv.addObject("resultados", resultados);
+        } else {
+            // Si no se ha ingresado nombre, muestra todos los países
+            mv.addObject("resultados", paises);
+        }
+
+        return mv;
     }
 
-    @GetMapping("/paises")
-    private List<String> getAllCountries(){
 
-        return paises;
-    }
+    /*
 
     @GetMapping("/paises/{id}")
     public String getCountryById(@PathVariable int id){
@@ -38,5 +64,13 @@ public class HelloController {
         else {
             return "paises not found";
         }
+    }*/
+
+    @GetMapping("/paises")
+    public ModelAndView mostrarPaises() {
+        ModelAndView mav = new ModelAndView("index");
+        // Añade el atributo al modelo
+        mav.addObject("paises", helloService.getPaises());
+        return mav;
     }
 }

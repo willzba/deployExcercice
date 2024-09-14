@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Buscar País</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        input[type="text"] {
+            padding: 10px;
+            margin: 10px 0;
+        }
+        input[type="submit"] {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        table {
+            width: 50%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+<h1>Buscar País</h1>
+
+<form action="/" method="get">
+    <input type="text" name="nombre" placeholder="Ingrese el nombre del país" />
+    <input type="submit" value="Buscar" />
+</form>
+
+<div th:if="${resultados != null}">
+    <h2>Resultados:</h2>
+    <table th:if="${resultados.size() > 0}">
+        <thead>
+        <tr>
+            <th>País</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="pais : ${resultados}">
+            <td th:text="${pais}">Nombre del país</td>
+        </tr>
+        </tbody>
+    </table>
+    <p th:if="${resultados.size() == 0}">No se encontraron países que coincidan con la búsqueda.</p>
+</div>
+</body>
+</html>
+
