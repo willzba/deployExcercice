@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class HelloService {
@@ -32,4 +33,16 @@ public class HelloService {
     public List<String> getPaises() {
         return paises;
     }
+
+    // Método de búsqueda separado
+    /*public List<String> buscarPaises(String nombre) {
+        if (nombre == null || nombre.isEmpty()) {
+            return paises; // Si no hay nombre, devuelve todos los países
+        }
+
+        // Filtrar los países por el nombre ingresado
+        return paises.stream()
+                .filter(pais -> pais.toLowerCase().contains(nombre.toLowerCase()))
+                .collect(Collectors.toList());
+    }*/
 }

@@ -1,60 +1,120 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buscar País</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 0;
         }
-        input[type="text"] {
-            padding: 10px;
-            margin: 10px 0;
+        h1 {
+            margin-top: 20px;
+            color: #333;
         }
-        input[type="submit"] {
+        .search-container {
+            position: relative;
+            margin-top: 20px;
+        }
+        .search-container input[type="text"] {
             padding: 10px 20px;
+            width: 300px;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+            transition: all 0.3s ease;
+            box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
+        }
+        .search-container input[type="text"]:focus {
+            width: 350px;
+            border-color: #4CAF50;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+            outline: none;
+        }
+        .search-container input[type="submit"] {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
             background-color: #4CAF50;
-            color: white;
             border: none;
+            color: white;
+            padding: 10px;
+            border-radius: 50%;
             cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .search-container input[type="submit"]:hover {
+            background-color: #45a049;
         }
         table {
             width: 50%;
             border-collapse: collapse;
             margin-top: 20px;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+            background-color: #fff;
         }
         th, td {
             border: 1px solid #ddd;
-            padding: 8px;
+            padding: 12px;
+            text-align: center;
         }
         th {
-            background-color: #f2f2f2;
+            background-color: #4CAF50;
+            color: white;
+        }
+        td {
+            background-color: #f9f9f9;
+        }
+        td:hover {
+            background-color: #f1f1f1;
+        }
+        @media (max-width: 768px) {
+            table {
+                width: 90%;
+            }
+            .search-container input[type="text"] {
+                width: 90%;
+            }
+            .search-container input[type="text"]:focus {
+                width: 95%;
+            }
         }
     </style>
 </head>
 <body>
 <h1>Buscar País</h1>
 
-<form action="/" method="get">
-    <input type="text" name="nombre" placeholder="Ingrese el nombre del país" />
-    <input type="submit" value="Buscar" />
-</form>
-
-<div th:if="${resultados != null}">
-    <h2>Resultados:</h2>
-    <table th:if="${resultados.size() > 0}">
-        <thead>
-        <tr>
-            <th>País</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="pais : ${resultados}">
-            <td th:text="${pais}">Nombre del país</td>
-        </tr>
-        </tbody>
-    </table>
-    <p th:if="${resultados.size() == 0}">No se encontraron países que coincidan con la búsqueda.</p>
+<div class="search-container">
+    <form action="/buscar" method="get">
+        <input type="text" name="nombre" placeholder="Ingrese el nombre del país" />
+        <input type="submit" value="🔍" />
+    </form>
 </div>
+<p><a href="/paises">Ver lista completa</a></p>
+
+<h2>Resultados:</h2>
+<table>
+    <thead>
+    <tr>
+        <th>País</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="pais : ${paises}">
+        <td th:text="${pais}">Nombre del país</td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(paises)}">
+        <td>No se encontraron resultados</td>
+    </tr>
+    </tbody>
+</table>
 </body>
 </html>
+
 
