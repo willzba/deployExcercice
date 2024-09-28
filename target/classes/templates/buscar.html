@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{css/buscarCss.css}">
+    <title>Buscar País</title>
+</head>
+<body>
+<h1>Buscar País</h1>
+
+<div class="search-container">
+    <form action="/buscar" method="get">
+        <input type="text" name="nombre" placeholder="Ingrese el nombre del país" />
+        <input type="submit" value="🔍" />
+    </form>
+</div>
+<p><a href="/paises">Ver lista completa</a></p>
+
+<h2>Resultados:</h2>
+<table>
+    <thead>
+    <tr>
+        <th>País</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="pais : ${paises}">
+        <td th:text="${pais}">Nombre del país</td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(paises)}">
+        <td>No se encontraron resultados</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
+
+
