@@ -4,11 +4,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class HelloService {
@@ -34,15 +32,32 @@ public class HelloService {
         return paises;
     }
 
-    // Método de búsqueda separado
-    /*public List<String> buscarPaises(String nombre) {
-        if (nombre == null || nombre.isEmpty()) {
-            return paises; // Si no hay nombre, devuelve todos los países
+    public boolean eliminarPais(String nombrePais) {
+        // Si manejas una lista en memoria, elimínalo de la lista en su lugar
+        return paises.removeIf(pais -> pais.equalsIgnoreCase(nombrePais));
+    }
+
+    public boolean agregarPais(String nuevoPais) {
+        // Verifica si el país ya existe en la lista (ignorando mayúsculas y minúsculas)
+        boolean existe = paises.stream()
+                .anyMatch(pais -> pais.equalsIgnoreCase(nuevoPais));
+
+        if (!existe) {
+            paises.add(nuevoPais);
+            return true; // Indica que el país se agregó exitosamente
         }
 
-        // Filtrar los países por el nombre ingresado
-        return paises.stream()
-                .filter(pais -> pais.toLowerCase().contains(nombre.toLowerCase()))
-                .collect(Collectors.toList());
-    }*/
+        return false; // El país ya existía
+    }
+
+    public boolean modificarPais(String nombreActual, String nuevoNombre) {
+        for (int i = 0; i < paises.size(); i++) {
+            if (paises.get(i).equalsIgnoreCase(nombreActual)) {
+                paises.set(i, nuevoNombre);
+                return true; // Modificación exitosa
+            }
+        }
+        return false; // El país no fue encontrado
+    }
+
 }

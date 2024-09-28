@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ public class HelloController {
         this.helloService = helloService;
     }
 
+    //bucar pais
     @GetMapping("/buscar")
     public ModelAndView buscar(@RequestParam(name = "nombre", required = false) String nombre) {
         List<String> paises = helloService.getPaises();
@@ -39,6 +41,7 @@ public class HelloController {
         return modelAndView;
     }
 
+    //devolver todos los paises
     @GetMapping("/paises")
     public ModelAndView mostrarPaises() {
         ModelAndView mav = new ModelAndView("index");
@@ -47,37 +50,44 @@ public class HelloController {
         return mav;
     }
 
+    @PostMapping("/paises/eliminar")
+    public String eliminarPais(@RequestParam("nombrePais") String nombrePais, RedirectAttributes redirectAttributes) {
+        boolean eliminado = helloService.eliminarPais(nombrePais);
+        if (eliminado) {
+            redirectAttributes.addFlashAttribute("mensaje", "El país '" + nombrePais + "' fue eliminado exitosamente.");
+        } else {
+            redirectAttributes.addFlashAttribute("mensaje", "El país '" + nombrePais + "' no se pudo eliminar.");
+        }
+        return "redirect:/paises"; // Redirige a la página de países
+    }
 
-    /*@GetMapping("/")
-    public ModelAndView buscar() {
-        ModelAndView mv = new ModelAndView("buscar");
-        return mv;
-    }*/
+    @PostMapping("/paises/agregar")
+    public String agregarPais(@RequestParam("nombrePais") String nombrePais, RedirectAttributes redirectAttributes) {
+        boolean agregado = helloService.agregarPais(nombrePais);
 
-   /* @GetMapping("/buscar")
-    @ResponseBody  // Esto asegura que el método devuelva JSON
-    public List<String> buscar(@RequestParam(name = "nombre", required = false) String nombre) {
-        List<String> paises = helloService.getPaises();
-
-        if (nombre != null && !nombre.isEmpty()) {
-            return paises.stream()
-                    .filter(pais -> pais.toLowerCase().contains(nombre.toLowerCase()))
-                    .collect(Collectors.toList());
+        if (agregado) {
+            redirectAttributes.addFlashAttribute("mensaje", "El país '" + nombrePais + "' fue agregado exitosamente.");
+        } else {
+            redirectAttributes.addFlashAttribute("mensaje", "El país '" + nombrePais + "' ya existe en la lista.");
         }
 
-        return paises;
-    }*/
+        return "redirect:/paises";
+    }
 
+    @PostMapping("/paises/modificar")
+    public String modificarPais(@RequestParam("nombreActual") String nombreActual,
+                                @RequestParam("nuevoNombre") String nuevoNombre,
+                                RedirectAttributes redirectAttributes) {
+        boolean modificado = helloService.modificarPais(nombreActual, nuevoNombre);
 
-    /*
-
-    @GetMapping("/paises/{id}")
-    public String getCountryById(@PathVariable int id){
-        if(id >=0 && id < paises.size()){
-            return paises.get(id);
+        if (modificado) {
+            redirectAttributes.addFlashAttribute("mensaje", "El país '" + nombreActual + "' fue modificado a '" + nuevoNombre + "' exitosamente.");
+        } else {
+            redirectAttributes.addFlashAttribute("mensaje", "El país '" + nombreActual + "' no se pudo encontrar.");
         }
-        else {
-            return "paises not found";
-        }
-    }*/
+
+        return "redirect:/paises";
+    }
+
+
 }

@@ -1,43 +1,53 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <!DOCTYPE html>
 <head>
+    <link rel="stylesheet" th:href="@{css/indexCss.css}">
     <title>Lista de Países</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-        table {
-            width: 50%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-    </style>
 </head>
 <body>
 <h1>Lista de Países</h1>
 <p><a href="/buscar">Volver a la búsqueda</a></p>
+
+<h3>Modificar el nombre de un país</h3>
+<form th:action="@{/paises/modificar}" method="post">
+    <label for="nombreActual">País actual:</label>
+    <select name="nombreActual" id="nombreActual" required>
+        <option th:each="pais : ${paises}" th:value="${pais}" th:text="${pais}"></option>
+    </select>
+
+    <label for="nuevoNombre">Nuevo nombre:</label>
+    <input type="text" name="nuevoNombre" placeholder="Nuevo nombre" required/>
+
+    <button type="submit">Modificar</button>
+</form>
+
+<h3>Agregar un nuevo país</h3>
+<form th:action="@{/paises/agregar}" method="post">
+    <input type="text" name="nombrePais" placeholder="Nombre del país" required/>
+    <button type="submit">Agregar</button>
+</form>
+
+<div th:if="${mensaje}" class="alert alert-info" th:text="${mensaje}"></div>
 <table>
     <thead>
     <tr>
         <th>País</th>
+        <th>Acciones</th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="pais : ${paises}">
-        <td th:text="${pais}">Nombre del país</td>
+        <td th:text="${pais}"></td>
+        <td>
+            <form th:action="@{/paises/eliminar}" method="post">
+                <input type="hidden" th:value="${pais}" name="nombrePais"/>
+                <button type="submit">Eliminar</button>
+            </form>
+        </td>
     </tr>
     </tbody>
 </table>
+
 </body>
 </html>
 
